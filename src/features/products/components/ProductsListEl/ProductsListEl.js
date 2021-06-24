@@ -45,9 +45,9 @@ export function ProductsListEl({ id, title, description, photo, price, isNew, is
 
   const deleteMutation = useDeleteProduct();
 
-  const handleDelete = () => {
+/*  const handleDelete = () => {
     deleteMutation.mutate(id);
-  };
+  };*/
 
   return (
     <Card className={classes.root}>
@@ -82,9 +82,10 @@ export function ProductsListEl({ id, title, description, photo, price, isNew, is
       </CardContent>
       <CardActions>
         <Button disabled={deleteMutation.isLoading} size="small" variant="outlined" component={Link} color="default" to={`/products/${id}`}>View</Button>
-        <Button disabled={deleteMutation.isLoading} size="small" variant="outlined" component={Link} color="primary" to={`/edit-product/${id}`}>Edit</Button>
+        {/*<Button disabled={deleteMutation.isLoading} size="small" variant="outlined" component={Link} color="primary" to={`/edit-product/${id}`}>Edit</Button>
         <Button disabled={deleteMutation.isLoading} size="small" variant="outlined" color="secondary" onClick={handleDelete}>Delete</Button>
-        <Button disabled={isSale} size="small" variant="outlined" color="primary">In basket</Button>
+        закомменченное для корректировки даты, она каличная*/}
+        <Button disabled={!isInStock} size="small" variant="outlined" color="primary">In basket</Button>
       </CardActions>
     </Card>
   );

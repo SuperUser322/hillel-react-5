@@ -121,13 +121,12 @@ export function ProductForm({ editProduct = null, onSubmit = console.log, isSubm
                 <Controller
                   name="isNew"
                   control={control}
-                  defaultChecked={false}
                   render={({ field }) => <Checkbox {...field} />
                   }
                 />
               </>
             </Box>
-            {/*<Box mt={1}>
+            <Box mt={1}>
               <>
                 <span>Is it sale: </span>
                 <Controller
@@ -150,7 +149,7 @@ export function ProductForm({ editProduct = null, onSubmit = console.log, isSubm
                   }
                 />
               </>
-            </Box>*/}
+            </Box>
 
             <Box mt={4}>
               <Button component={Link} disabled={isSubmitting} to="/catalog">Cancel</Button>
