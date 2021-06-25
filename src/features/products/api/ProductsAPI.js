@@ -1,11 +1,11 @@
 import { axiosInstance } from "../../../services/axios";
 
 export function getList() {
-  return axiosInstance.get('/Products');
+  return axiosInstance.get('/products');
 }
 
 export function get(id) {
-  return axiosInstance.get(`/Products/${id}`);
+  return axiosInstance.get(`/products/${id}`);
 }
 
 export function create({
