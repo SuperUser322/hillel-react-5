@@ -42,7 +42,7 @@ export function Header() {
           <Button color="inherit" component={NavLink} to="/">About us</Button>
           <Button color="inherit" component={NavLink} to="/deliveryAndPayment">Delivery&payment</Button>
           <Button color="inherit" component={NavLink} to="/catalog">Catalog</Button>
-          <Button color="inherit" component={NavLink} to="/basket">Basket</Button>
+          <Button color="inherit" component={NavLink} to="/cart">Cart</Button>
           {/*<Button color="inherit" component={NavLink} to="/new-product">Add Product</Button>* на случай если понадобится*/}
         </Toolbar>
       </AppBar>

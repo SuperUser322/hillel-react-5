@@ -1,7 +1,8 @@
 import React from 'react';      //карточки в каталоге (PRODUCTS)
-import PropTypes from 'prop-types';
+//import { useQuery } from "react-query";//
 import Box from "@material-ui/core/Box";
 import { makeStyles } from '@material-ui/core/styles';
+//import CircularProgress from "@material-ui/core/CircularProgress";
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -11,6 +12,11 @@ import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
 //import format from 'date-fns/format'
 import { useDeleteProduct } from "../../hooks/useDeleteProduct";
+//import { connect } from 'react-redux';
+import { addToCart } from '../../../cart/ducks/cartActions';
+//import { CategoryData } from "../../utils/CategoryData";
+
+//import { getCategoriesList } from "../../api/CategoriesAPI";
 
 const useStyles = makeStyles({
   root: {
@@ -39,12 +45,30 @@ const useStyles = makeStyles({
 });
 
 export function ProductsListEl({ id, title, description, photo, price, isNew, isSale, isInStock, categories, rating, createdAt }) {
+
+  //const { data, isLoading, error } = CategoryData();
   const classes = useStyles();
+
+    /*const { data, isLoading, error  } = useQuery('category', async () => { // нифига не доступно в компоненте
+      let { data } = await getCategoriesList();
+      return data;
+    });*/
+
   /*const date = format(new Date(createdAt), "dd.MM.yyyy"),
     time = format(new Date(createdAt), "HH:mm");*/
 
   const deleteMutation = useDeleteProduct();
 
+  const handleClick = (id) => {
+    addToCart({ id, title, description, photo, price, isNew, isSale, isInStock, categories, rating, createdAt });
+  }
+
+  /*const categoryTransformation = (category) => {
+    console.log(category);
+    let cat = data.find(x => x.id === `${category}`).name;
+    return cat.replace(/"/g);
+  }*/
+  //console.log(data);
 /*  const handleDelete = () => {
     deleteMutation.mutate(id);
   };*/
@@ -52,7 +76,7 @@ export function ProductsListEl({ id, title, description, photo, price, isNew, is
   return (
     <Card className={classes.root}>
       <CardContent>
-        {/*<Typography className={classes.date} color="textSecondary" gutterBottom>
+        {/*<Typography className={classes.date} color="textSecondary" gutterBottom>                  categoryTransformation()
           Posted {date} at {time}
         </Typography>*/}
         <Typography className={classes.title} variant="h6" component="h2">
@@ -85,15 +109,21 @@ export function ProductsListEl({ id, title, description, photo, price, isNew, is
         {/*<Button disabled={deleteMutation.isLoading} size="small" variant="outlined" component={Link} color="primary" to={`/edit-product/${id}`}>Edit</Button>
         <Button disabled={deleteMutation.isLoading} size="small" variant="outlined" color="secondary" onClick={handleDelete}>Delete</Button>
         закомменченное для корректировки даты, она каличная*/}
-        <Button disabled={!isInStock} size="small" variant="outlined" color="primary">In basket</Button>
+        <Button to="/cart" onClick={()=>{handleClick(id)}} disabled={!isInStock} size="small" variant="outlined" color="primary">In cart</Button>
       </CardActions>
     </Card>
   );
 }
+/*
+const mapStateToProps = (state)=>{
+  return {
+    items: state.items
+  }
+}
+const mapDispatchToProps= (dispatch)=>{
+  return{
+    addToCart: (id)=>{dispatch(addToCart(id))}
+  }
+}
 
-ProductsListEl.propTypes = {
-  id: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  body: PropTypes.string,
-  createdAt: PropTypes.string,
-};
+export default connect(mapStateToProps,mapDispatchToProps)(ProductsListEl);*/
