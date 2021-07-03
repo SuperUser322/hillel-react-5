@@ -1,6 +1,11 @@
-import { ducks as feature } from "./features/feature/ducks";
+import { ducks as products } from "./features/products/ducks";
+import { ducks as aboutUs } from "./features/aboutUs/ducks";
+import { ducks as deliveryAndPayment } from "./features/deliveryAndPayment/ducks";
+import { ducks as cart } from "./features/cart/ducks";
 
 export const ducks = [
-  // put here features' ducks
-  ...feature,
+  ...products,
+  ...aboutUs,
+  ...deliveryAndPayment,
+  ...cart
 ];

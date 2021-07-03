@@ -8,6 +8,10 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { NavLink } from "react-router-dom";
 import EcoIcon from '@material-ui/icons/Eco';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import Badge from '@material-ui/core/Badge';
+import { useSelector } from "react-redux";
+import * as SettingsDuck from '../../../../src/features/cart/ducks/settings.duck';
 
 const useStyles = makeStyles(theme => ({
   offset: theme.mixins.toolbar,
@@ -25,10 +29,27 @@ const useStyles = makeStyles(theme => ({
     height: 30,
     color: "#ffea00",
   },
+  badge: {
+    top: '50%',
+    right: -3,
+    // The border color match the background color.
+    border: `2px solid ${
+      theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[900]
+    }`,
+  },
 }));
 
 export function Header() {
   const classes = useStyles();
+  const items = useSelector(SettingsDuck.selectItems);
+
+  const forTotalQuantity = () => {
+    let total=0;
+    items.map(item =>
+      total = total + item.quantity
+    );
+    return total;
+  };
 
   return (
     <Fragment>
@@ -42,7 +63,11 @@ export function Header() {
           <Button color="inherit" component={NavLink} to="/">About us</Button>
           <Button color="inherit" component={NavLink} to="/deliveryAndPayment">Delivery&payment</Button>
           <Button color="inherit" component={NavLink} to="/catalog">Catalog</Button>
-          <Button color="inherit" component={NavLink} to="/cart">Cart</Button>
+          <Button color="inherit" component={NavLink} to="/cart">Cart
+            <Badge badgeContent={forTotalQuantity()} color="primary">
+              <ShoppingCartIcon />
+            </Badge>
+          </Button>
           {/*<Button color="inherit" component={NavLink} to="/new-product">Add Product</Button>* на случай если понадобится*/}
         </Toolbar>
       </AppBar>
