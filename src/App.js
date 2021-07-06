@@ -4,12 +4,16 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { QueryClientProvider } from "react-query";
 
-import store from "./services/store";
+import { store } from "./services/store";
 import history from "./services/history";
 import queryClient from "./services/queryClient";
 import { AppContainer } from "./AppContainer";
 import "./shared/styles/main.scss";
 import { theme } from "./theme";
+//import { someGenerator } from "./utils";
+
+
+//window.someGenerator = someGenerator;
 
 function App() {
   return (

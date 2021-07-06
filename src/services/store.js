@@ -1,73 +1,37 @@
-import { applyMiddleware, combineReducers, compose as _compose, createStore as _createStore } from 'redux';
-import { connectRouter, routerMiddleware } from 'connected-react-router';
-import { createLogger } from 'redux-logger';
+import { createStore as _createStore, combineReducers, applyMiddleware, compose } from "redux";
 import createSagaMiddleware from 'redux-saga';
 import { all } from 'redux-saga/effects';
-import history from "./history";
-
+import thunk from 'redux-thunk';
 import { ducks } from "../ducks";
-import { appConf } from "../config";
 
-/**
- * Grab all reducers
- */
+// grab all reducers together
 const reducers = {};
-ducks.forEach(duck => {
-  reducers[duck.namespace] = duck.reducer;
+ducks.forEach(d => reducers[d.NAMESPACE] = d.default);
+
+// grab all sagas together
+const sagas = [];
+ducks.forEach(d => {
+  if (d.saga) sagas.push(d.saga);
 });
 
-/**
- * Grab all sagas together
- */
-const sagas = ducks.map(d => d.sagas);
+// create store function
+export function createStore() {
+  let sagaMiddleware = createSagaMiddleware();
+  let middleware = [thunk, sagaMiddleware];
 
-/**
- * Creates the store
- * @param history
- * @return {Store}
- */
-function createStore({ history }) {
-  // make middlewares
-  const sagaMiddleware = createSagaMiddleware();
-  const middlewares = [routerMiddleware(history), sagaMiddleware];
-  let compose = _compose;
+  const middlewareEnhancer = applyMiddleware(...middleware);
+  const composedEnhancers = (
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+  )(middlewareEnhancer);
 
-  // add dev features
-  if (!appConf.isProd) {
-    middlewares.unshift(
-      createLogger({
-        collapsed: true,
-      }),
-    );
-    compose = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || _compose; // add redux dev tools
-  }
+  const store = _createStore(combineReducers(reducers), undefined, composedEnhancers);
 
-  // create store
-  const store = _createStore(
-    combineReducers({
-      router: connectRouter(history),
-      ...reducers,
-    }),
-    {},
-    compose(applyMiddleware(...middlewares)),
-  );
-
-  // run sagas
   sagaMiddleware.run(function* () {
-    yield all([...sagas.map(s => s())]);
+    yield all(sagas.map(s => s()));
   });
 
   return store;
 }
 
-const store = module.hot?.data?.store || createStore({ history });
-
-// handle hot reloading
-if (module.hot) {
-  module.hot.dispose((data) => {
-    /* eslint no-param-reassign: 0 */
-    data.store = store;
-  });
-}
-
-export default store;
+// create the store
+export const store = createStore();

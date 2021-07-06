@@ -51,7 +51,7 @@ const initialState = {
 // reducer
 export function reducer(state = initialState, action) {
   let { type, id, item, key, value } = action;
-  console.log(state);
+  
   switch (type) {
     case ADD_ITEM:
       return produce(state, (s) => {
@@ -91,4 +91,3 @@ export function reducer(state = initialState, action) {
 
 // selectors
 export const selectItems = state => state[namespace].items;
-export const selectTotalPrice = state => state[namespace].totalPrice;

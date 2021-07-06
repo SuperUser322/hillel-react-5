@@ -10,6 +10,6 @@ export const appConf = {
     type: isProd ? ROUTER_TYPE_BROWSER : ROUTER_TYPE_HASH,
   },
   api: {
-    baseURL: "https://60bb880442e1d00017620c95.mockapi.io", // todo change this  https://60d3050d858b410017b2eb83.mockapi.io
+    baseURL: "https://60e4720a5bcbca001749e9e1.mockapi.io", // todo change this  https://60d3050d858b410017b2eb83.mockapi.io //https://react-js-course-05-05-2021-bkd.herokuapp.com/
   },
 };
