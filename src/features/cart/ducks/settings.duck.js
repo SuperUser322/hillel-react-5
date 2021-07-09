@@ -51,7 +51,7 @@ const initialState = {
 // reducer
 export function reducer(state = initialState, action) {
   let { type, id, item, key, value } = action;
-  
+
   switch (type) {
     case ADD_ITEM:
       return produce(state, (s) => {
@@ -78,7 +78,7 @@ export function reducer(state = initialState, action) {
       });
 
     case SET_FIELD:
-      return produce(state, s => {
+      return produce(state, (s) => {
         s[key] = value;
       });
 

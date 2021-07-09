@@ -6,5 +6,4 @@ export const CategoryData = () => {
   return { data } = useQuery('category', async () => {
     const { data } = await getCategoriesList();
   });
-}
-*/
+}*/

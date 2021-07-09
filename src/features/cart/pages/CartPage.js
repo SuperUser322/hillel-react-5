@@ -9,6 +9,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
+
 import Typography from '@material-ui/core/Typography';
 import { NavLink } from "react-router-dom";
 
@@ -115,7 +116,7 @@ export const CartPage = () => {
       <Box>
         <Typography>Total quantity: {forTotalQuantity()}</Typography>
         <Typography>Total price: {forTotalPrice()} $</Typography>
-        <Button size="small" variant="outlined" color="primary" component={NavLink} to="/deliveryAndPayment" >checkout your order</Button>
+        <Button size="small" variant="outlined" color="primary" component={NavLink} to="/deliveryAndPayment" disabled={items.length===0} >checkout your order</Button>
       </Box>
     </>
   );

@@ -8,14 +8,11 @@ import { store } from "./services/store";
 import history from "./services/history";
 import queryClient from "./services/queryClient";
 import { AppContainer } from "./AppContainer";
-import "./shared/styles/main.scss";
+//import "./shared/styles/main.scss";
 import { theme } from "./theme";
-//import { someGenerator } from "./utils";
 
-
-//window.someGenerator = someGenerator;
-
-function App() {
+export default function App() {
+  console.log(store);
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
@@ -29,5 +26,3 @@ function App() {
     </Provider>
   );
 }
-
-export default App;

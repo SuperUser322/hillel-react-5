@@ -1,18 +1,20 @@
-import React from 'react';      //карточки в каталоге (PRODUCTS)
-//import { useQuery } from "react-query";//
+import React, { useState } from 'react';      //карточки в каталоге (PRODUCTS)
+import { useQuery } from "react-query";
 import Box from "@material-ui/core/Box";
 import { makeStyles } from '@material-ui/core/styles';
-//import CircularProgress from "@material-ui/core/CircularProgress";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
-//import format from 'date-fns/format'
 import { useDeleteProduct } from "../../hooks/useDeleteProduct";
 //import { connect } from 'react-redux';
+import { getCategoriesList } from "../../api/CategoriesAPI";
 //import { addToCart } from '../../../cart/ducks/cartActions';
 //import { CategoryData } from "../../utils/CategoryData";
 
@@ -51,24 +53,53 @@ export function ProductsListEl({ id, title, description, photo, price, isNew, is
   const deleteMutation = useDeleteProduct();
   const items = useSelector(SettingsDuck.selectItems);
   const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
+  const { data, isLoading, error } = useQuery('category', async () => {
+    const { data } = await getCategoriesList();
+    return data;
+  });
 
   const addItem = ({  id, title, photo, price }) => {
-    const checkIt = (itemId) => items.find(x => x.id === `${itemId}`) ? true : false;
-    if (checkIt(id) === false){
-      dispatch(SettingsDuck.addItem({
-        id,
-        title,
-        photo,
-        price,
-        quantity: 1,
-      }));
-    }
+    //const checkIt = (itemId) => items.find(x => x.id === `${itemId}`) ? true : false;
+    //if (checkIt(id) === false){
+    dispatch(SettingsDuck.addItem({
+      id,
+      title,
+      photo,
+      price,
+      quantity: 1,
+    }));
+    setOpen(true);
+
+  /*  }
     else {
       let itemQuantity = items.find(x => x.id === `${id}`).quantity;
       dispatch(SettingsDuck.updateItem(id, {
         quantity: itemQuantity+1
       }));
+    }*/
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
     }
+
+    setOpen(false);
+  };
+
+  const controlReason = (isInStock) => {
+    let checkItem = items.find(x => x.id === `${id}`) ? true : false;
+    return isInStock ? ((!checkItem) ? "In cart" : "Already in cart") : "Out of stock";
+  };
+
+  const isDisabled = (id, isInStock) => {
+    let checkItem = items.find(x => x.id === `${id}`) ? true : false;
+    return (!isInStock) === (!checkItem);
+  };
+
+  const categoriesTransform = (categoryNumber) => {
+    return (categoryNumber !== null) ? data[categoryNumber-1].name : null;
   };
 
 ////////////////////////////////////////////////////////////////////////////// это всё бред, потому что категорий всего 16, а id в районе от 1 до 33 в дате категорий
@@ -99,10 +130,18 @@ export function ProductsListEl({ id, title, description, photo, price, isNew, is
         <Typography variant="body2">Is it sale: {isSale === true ? `yes` : `no`}</Typography>
         <Typography variant="body2">Is it in stock: {isInStock === true ? `yes` : `no`}</Typography>
         <Box variant="body2">Categories:
-          {categories?.map(category => (
-            <Typography variant="body2" key={category}><span>{category}</span>
-            </Typography>
-          ))}
+          {isLoading ? (
+            <Box pt={10} pb={10} display="flex" justifyContent="center">
+              <CircularProgress />
+            </Box>
+          ) : error ? (
+            <Typography variant="h4" color="secondary">{error.message}</Typography>
+          ) : (data &&
+            categories?.map(category => (
+              <Typography variant="body2" key={category}><span>{categoriesTransform(category)}</span>
+              </Typography>
+            ))
+          )}
         </Box>
         <span><span className={classes.star}> &#9733;</span>{rating}</span>
       </CardContent>
@@ -111,7 +150,12 @@ export function ProductsListEl({ id, title, description, photo, price, isNew, is
         {/*<Button disabled={deleteMutation.isLoading} size="small" variant="outlined" component={Link} color="primary" to={`/edit-product/${id}`}>Edit</Button>
         <Button disabled={deleteMutation.isLoading} size="small" variant="outlined" color="secondary" onClick={handleDelete}>Delete</Button>
         закомменченное для корректировки даты, она каличная*/}
-        <Button to="/cart" onClick={() => addItem({ id: id, title: title, photo: photo, price: price, })} disabled={!isInStock} size="small" variant="outlined" color="primary">In cart</Button>
+        <Button to="/cart" onClick={() => addItem({ id: id, title: title, photo: photo, price: price, })} disabled={isDisabled(id, isInStock)} size="small" variant="outlined" color="primary">{controlReason(isInStock)}</Button>
+        <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+          <MuiAlert elevation={6} variant="filled" onClose={handleClose} severity="success">
+            Product {title} was added to the cart!
+          </MuiAlert>
+      </Snackbar>
       </CardActions>
     </Card>
   );

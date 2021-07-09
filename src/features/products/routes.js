@@ -22,7 +22,8 @@ export const routes = [
     path: '/new-product',
     component: CreateProductPage,
     exact: true,
-  },  {
+  },
+  {
     key: `${featureConf}/edit-product`,
     path: '/edit-product/:id',
     component: EditProductPage,
