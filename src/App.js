@@ -12,7 +12,7 @@ import { AppContainer } from "./AppContainer";
 import { theme } from "./theme";
 
 export default function App() {
-  console.log(store);
+  //console.log(store);
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>

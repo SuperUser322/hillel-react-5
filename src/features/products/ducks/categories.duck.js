@@ -79,9 +79,5 @@ function* loadDataSaga() {
 }
 
 export function* saga() {
-  console.log('----------------- saga started');
   yield takeEvery(load, loadDataSaga);
-  /*yield takeEvery(setIsOpen, function* (action) {
-    console.log('----------------- saga has received an action', action);
-  });*/
 }

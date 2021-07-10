@@ -1,5 +1,4 @@
-import React, { useState } from 'react';      //карточки в каталоге (PRODUCTS)
-import { useQuery } from "react-query";
+import React, { useState, useEffect } from 'react';      //карточки в каталоге (PRODUCTS)
 import Box from "@material-ui/core/Box";
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -14,7 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
 import { useDeleteProduct } from "../../hooks/useDeleteProduct";
 //import { connect } from 'react-redux';
-import { getCategoriesList } from "../../api/CategoriesAPI";
+import * as categoriesDuck from '../../ducks/categories.duck';
 //import { addToCart } from '../../../cart/ducks/cartActions';
 //import { CategoryData } from "../../utils/CategoryData";
 
@@ -54,14 +53,15 @@ export function ProductsListEl({ id, title, description, photo, price, isNew, is
   const items = useSelector(SettingsDuck.selectItems);
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
-  const { data, isLoading, error } = useQuery('category', async () => {
-    const { data } = await getCategoriesList();
-    return data;
-  });
+
+  let categoryData = useSelector(categoriesDuck.selectData);
+  let categoryError = useSelector(categoriesDuck.selectError);
+  let categoryIsLoading = useSelector(categoriesDuck.selectIsLoading);
+  useEffect(() => {
+      dispatch(categoriesDuck.load());
+    }, [dispatch]);
 
   const addItem = ({  id, title, photo, price }) => {
-    //const checkIt = (itemId) => items.find(x => x.id === `${itemId}`) ? true : false;
-    //if (checkIt(id) === false){
     dispatch(SettingsDuck.addItem({
       id,
       title,
@@ -70,14 +70,6 @@ export function ProductsListEl({ id, title, description, photo, price, isNew, is
       quantity: 1,
     }));
     setOpen(true);
-
-  /*  }
-    else {
-      let itemQuantity = items.find(x => x.id === `${id}`).quantity;
-      dispatch(SettingsDuck.updateItem(id, {
-        quantity: itemQuantity+1
-      }));
-    }*/
   };
 
   const handleClose = (event, reason) => {
@@ -99,7 +91,7 @@ export function ProductsListEl({ id, title, description, photo, price, isNew, is
   };
 
   const categoriesTransform = (categoryNumber) => {
-    return (categoryNumber !== null) ? data[categoryNumber-1].name : null;
+    return (categoryNumber !== null) ? categoryData[categoryNumber-1].name : null;
   };
 
 ////////////////////////////////////////////////////////////////////////////// это всё бред, потому что категорий всего 16, а id в районе от 1 до 33 в дате категорий
@@ -130,13 +122,13 @@ export function ProductsListEl({ id, title, description, photo, price, isNew, is
         <Typography variant="body2">Is it sale: {isSale === true ? `yes` : `no`}</Typography>
         <Typography variant="body2">Is it in stock: {isInStock === true ? `yes` : `no`}</Typography>
         <Box variant="body2">Categories:
-          {isLoading ? (
+          {categoryIsLoading ? (
             <Box pt={10} pb={10} display="flex" justifyContent="center">
               <CircularProgress />
             </Box>
-          ) : error ? (
-            <Typography variant="h4" color="secondary">{error.message}</Typography>
-          ) : (data &&
+          ) : categoryError ? (
+            <Typography variant="h4" color="secondary">{categoryError.message}</Typography>
+          ) : (categoryData &&
             categories?.map(category => (
               <Typography variant="body2" key={category}><span>{categoriesTransform(category)}</span>
               </Typography>
@@ -155,7 +147,7 @@ export function ProductsListEl({ id, title, description, photo, price, isNew, is
           <MuiAlert elevation={6} variant="filled" onClose={handleClose} severity="success">
             Product {title} was added to the cart!
           </MuiAlert>
-      </Snackbar>
+        </Snackbar>
       </CardActions>
     </Card>
   );

@@ -1,7 +1,7 @@
-/*import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { takeEvery, put, call } from 'redux-saga/effects';
 
-export const NAMESPACE = 'postsBySagaLive';
+export const NAMESPACE = 'productsBySagaLive';
 
 const slice = createSlice({
   name: NAMESPACE,
@@ -79,7 +79,7 @@ function* loadDataSaga() {
 }
 
 export function* saga() {
-  console.log('----------------- saga started');
+  //console.log('----------------- saga started');
   yield takeEvery(load, loadDataSaga);
   /*yield takeEvery(setIsOpen, function* (action) {/////////////////////////////////////
     console.log('----------------- saga has received an action', action);

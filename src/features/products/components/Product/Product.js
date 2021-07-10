@@ -1,6 +1,5 @@
-import React,{ useState } from 'react';      //развернутый вид продукта VIEW
+import React,{ useState, useEffect } from 'react';      //развернутый вид продукта VIEW
 import PropTypes from 'prop-types';
-import { useQuery } from "react-query";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import format from "date-fns/format";
@@ -14,8 +13,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useSelector, useDispatch } from "react-redux";
 import * as SettingsDuck from '../../../cart/ducks/settings.duck';
 
+import * as categoriesDuck from '../../ducks/categories.duck';
+
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { getCategoriesList } from "../../api/CategoriesAPI";
 
 const useStyles = makeStyles((theme) => ({
   media: {
@@ -36,10 +36,13 @@ export function Product({ id, title, description, price, photo, isNew, isSale, i
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
 
-  const { data, isLoading, error } = useQuery('category', async () => {
-    const { data } = await getCategoriesList();
-    return data;
-  });
+  let categoryData = useSelector(categoriesDuck.selectData);
+  let categoryError = useSelector(categoriesDuck.selectError);
+  let categoryIsLoading = useSelector(categoriesDuck.selectIsLoading);
+
+  useEffect(() => {
+    dispatch(categoriesDuck.load());
+  }, [dispatch]);
 
   const addItem = ({  id, title, photo, price }) => {
     dispatch(SettingsDuck.addItem({
@@ -70,7 +73,7 @@ export function Product({ id, title, description, price, photo, isNew, isSale, i
   };
 
   const categoriesTransform = (categoryNumber) => {
-    return (categoryNumber !== null) ? data[categoryNumber-1].name : null;
+    return (categoryNumber !== null) ? categoryData[categoryNumber-1].name : null;
   };
 
   return (
@@ -91,13 +94,13 @@ export function Product({ id, title, description, price, photo, isNew, isSale, i
         <Typography variant="body2">Is it sale: {isSale === true ? `yes` : `no`}</Typography>
         <Typography variant="body2">Is it in stock: {isInStock === true ? `yes` : `no`}</Typography>
         <Box variant="body2"><span>Categories: </span>
-          {isLoading ? (
+          {categoryIsLoading ? (
             <Box pt={10} pb={10} display="flex" justifyContent="center">
               <CircularProgress />
             </Box>
-          ) : error ? (
-            <Typography variant="h4" color="secondary">{error.message}</Typography>
-          ) : (data &&
+          ) : categoryError ? (
+            <Typography variant="h4" color="secondary">{categoryError.message}</Typography>
+          ) : (categoryData &&
             categories?.map(category => (
               <Typography variant="body2" key={category}><span>{categoriesTransform(category)}</span>
               </Typography>

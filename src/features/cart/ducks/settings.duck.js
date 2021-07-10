@@ -1,13 +1,13 @@
 import { produce } from "immer";
 
 // duck namespace
-export const namespace = "cart/settings";
+export const NAMESPACE = "cart/settings";
 
 // action types
-export const ADD_ITEM = `${namespace}/ADD_ITEM`;
-export const UPDATE_ITEM = `${namespace}/UPDATE_ITEM`;
-export const REMOVE_ITEM = `${namespace}/REMOVE_ITEM`;
-export const SET_FIELD = `${namespace}/SET_FIELD`;
+export const ADD_ITEM = `${NAMESPACE}/ADD_ITEM`;
+export const UPDATE_ITEM = `${NAMESPACE}/UPDATE_ITEM`;
+export const REMOVE_ITEM = `${NAMESPACE}/REMOVE_ITEM`;
+export const SET_FIELD = `${NAMESPACE}/SET_FIELD`;
 // action creators
 export function addItem(item) {
   return {
@@ -49,7 +49,7 @@ const initialState = {
 //};
 
 // reducer
-export function reducer(state = initialState, action) {
+export default function reducer(state = initialState, action) {
   let { type, id, item, key, value } = action;
 
   switch (type) {
@@ -90,4 +90,4 @@ export function reducer(state = initialState, action) {
 }
 
 // selectors
-export const selectItems = state => state[namespace].items;
+export const selectItems = state => state[NAMESPACE].items;
