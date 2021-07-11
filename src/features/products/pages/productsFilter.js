@@ -1,9 +1,8 @@
-
 export const productsFilter = (
   findValue, priceValue, ratingValue,
   isNewSaleStockValues,
   isCategoryValues,
-  title, price, rating, isNew, isSale, isInStock, categories) => {
+  title, price, rating, isNew, isSale, isInStock, categories/*, categoryData*/) => {
 
   let minPrice = priceValue[0], maxPrice = priceValue[1],
     minRating = ratingValue[0], maxRating = ratingValue[1],
@@ -45,6 +44,8 @@ export const productsFilter = (
   };
 
   const categoriesFilterPart = (categories) => {
+    //return categoryData.map(category => (categories.includes(`${categoryData[category]}`) === false || [category.name]+`Check` === false)) ? false : true;
+
     return (categories.includes("1") === false || ErgonomicCheck === false) ?
       ((categories.includes("2") === false || UnbrandedCheck === false) ?
        ((categories.includes("3") === false || IntelligentCheck === false) ?
@@ -75,7 +76,7 @@ export const productsFilter = (
          ): true
         ): true
        ): true
-      ): true;
+     ): true;
   };
 
   let totallyResult = (mainFilterPart()=== true && categoriesFilterPart(categories)=== true) ? true : false;

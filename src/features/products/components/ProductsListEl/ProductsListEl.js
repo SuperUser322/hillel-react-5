@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';      //карточки в каталоге (PRODUCTS)
+import React, { useState } from 'react';      //карточки в каталоге (PRODUCTS)
 import Box from "@material-ui/core/Box";
 import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -57,16 +57,13 @@ export function ProductsListEl({ id, title, description, photo, price, isNew, is
   let categoryData = useSelector(categoriesDuck.selectData);
   let categoryError = useSelector(categoriesDuck.selectError);
   let categoryIsLoading = useSelector(categoriesDuck.selectIsLoading);
-  useEffect(() => {
+  /*useEffect(() => {
       dispatch(categoriesDuck.load());
-    }, [dispatch]);
+    }, [dispatch]);*/
 
-  const addItem = ({  id, title, photo, price }) => {
+  const addItem = ({ id }) => {
     dispatch(SettingsDuck.addItem({
       id,
-      title,
-      photo,
-      price,
       quantity: 1,
     }));
     setOpen(true);
@@ -142,7 +139,7 @@ export function ProductsListEl({ id, title, description, photo, price, isNew, is
         {/*<Button disabled={deleteMutation.isLoading} size="small" variant="outlined" component={Link} color="primary" to={`/edit-product/${id}`}>Edit</Button>
         <Button disabled={deleteMutation.isLoading} size="small" variant="outlined" color="secondary" onClick={handleDelete}>Delete</Button>
         закомменченное для корректировки даты, она каличная*/}
-        <Button to="/cart" onClick={() => addItem({ id: id, title: title, photo: photo, price: price, })} disabled={isDisabled(id, isInStock)} size="small" variant="outlined" color="primary">{controlReason(isInStock)}</Button>
+        <Button to="/cart" onClick={() => addItem({ id: id })} disabled={isDisabled(id, isInStock)} size="small" variant="outlined" color="primary">{controlReason(isInStock)}</Button>
         <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
           <MuiAlert elevation={6} variant="filled" onClose={handleClose} severity="success">
             Product {title} was added to the cart!

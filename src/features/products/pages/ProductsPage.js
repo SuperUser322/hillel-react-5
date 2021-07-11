@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { useQuery } from "react-query";
+import React, { useState, useEffect } from 'react';
+//import { useQuery } from "react-query";
 import Box from "@material-ui/core/Box";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { getList } from "../api/ProductsAPI";
+//import { getList } from "../api/ProductsAPI";
 import Typography from "@material-ui/core/Typography";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { ProductsListEl } from "../components/ProductsListEl";
@@ -15,6 +15,9 @@ import Switch from '@material-ui/core/Switch';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import { productsFilter } from "./productsFilter";
+import * as categoriesDuck from '../ducks/categories.duck';
+import * as productsDuck from '../ducks/products.duck';
+import { useSelector, useDispatch } from "react-redux";
 
 
 function valuetext(value) {
@@ -68,11 +71,25 @@ const useStyles = makeStyles(theme => ({
 
 export function ProductsPage() {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
-  const { data, isLoading, error } = useQuery('products', async () => {
+  /*const { data, isLoading, error } = useQuery('products', async () => {
     const { data } = await getList();
     return data;
-  });
+  });*/
+
+  let productsData = useSelector(productsDuck.selectData);
+  let productsError = useSelector(productsDuck.selectError);
+  let productsIsLoading = useSelector(productsDuck.selectIsLoading);
+
+  let categoryData = useSelector(categoriesDuck.selectData);
+  let categoryError = useSelector(categoriesDuck.selectError);
+  let categoryIsLoading = useSelector(categoriesDuck.selectIsLoading);
+
+  useEffect(() => {
+    dispatch(categoriesDuck.load());
+    dispatch(productsDuck.load());
+  }, [dispatch]);
 
   const [findValue, setFindValue] = useState(''),
     [priceValue, setPriceValue] = useState([100, 600]),
@@ -106,7 +123,9 @@ export function ProductsPage() {
 
     return productsFilter(findValue, priceValue, ratingValue,
       isNewSaleStockValues, isCategoryValues,
-      title, price, rating, isNew, isSale, isInStock, categories);
+      title, price, rating, isNew, isSale, isInStock, categories/*,
+      categoryData*/
+    );
   }
 
   const handleFindField = (e) => {
@@ -189,94 +208,40 @@ export function ProductsPage() {
                   Categories:
                 </Typography>
               </Box>
-              <Box className={classes.root}>
-                <FormControlLabel
-                  control={<Switch checked={isCategoryValues.Ergonomic} onChange={handleCategoryChange} name="Ergonomic" color="primary" />}
-                  label="Ergonomic(1)"
-                />
-                <FormControlLabel
-                  control={<Switch checked={isCategoryValues.Unbranded} onChange={handleCategoryChange} name="Unbranded" color="primary" />}
-                  label="Unbranded(2)"
-                />
-                <FormControlLabel
-                  control={<Switch checked={isCategoryValues.Intelligent} onChange={handleCategoryChange} name="Intelligent" color="primary" />}
-                  label="Intelligent(3)"
-                />
-                <FormControlLabel
-                  control={<Switch checked={isCategoryValues.Fantastic} onChange={handleCategoryChange} name="Fantastic" color="primary" />}
-                  label="Fantastic(4)"
-                />
-              </Box>
-              <Box className={classes.root}>
-                <FormControlLabel
-                  control={<Switch checked={isCategoryValues.Gorgeous} onChange={handleCategoryChange} name="Gorgeous" color="primary" />}
-                  label="Gorgeous(5)"
-                />
-                <FormControlLabel
-                  control={<Switch checked={isCategoryValues.Rustic} onChange={handleCategoryChange} name="Rustic" color="primary" />}
-                  label="Rustic(6)"
-                />
-                <FormControlLabel
-                  control={<Switch checked={isCategoryValues.Handmade} onChange={handleCategoryChange} name="Handmade" color="primary" />}
-                  label="Handmade(7)"
-                />
-                <FormControlLabel
-                  control={<Switch checked={isCategoryValues.Refined} onChange={handleCategoryChange} name="Refined" color="primary" />}
-                  label="Refined(8)"
-                />
-              </Box>
-              <Box className={classes.root}>
-                <FormControlLabel
-                  control={<Switch checked={isCategoryValues.Small} onChange={handleCategoryChange} name="Small" color="primary" />}
-                  label="Small(9)"
-                />
-                <FormControlLabel
-                  control={<Switch checked={isCategoryValues.Incredible} onChange={handleCategoryChange} name="Incredible" color="primary" />}
-                  label="Incredible(10)"
-                />
-                <FormControlLabel
-                  control={<Switch checked={isCategoryValues.Practical} onChange={handleCategoryChange} name="Practical" color="primary" />}
-                  label="Practical(11)"
-                />
-                <FormControlLabel
-                  control={<Switch checked={isCategoryValues.Generic} onChange={handleCategoryChange} name="Generic" color="primary" />}
-                  label="Generic(12)"
-                />
-              </Box>
-              <Box className={classes.root}>
-                <FormControlLabel
-                  control={<Switch checked={isCategoryValues.Sleek} onChange={handleCategoryChange} name="Sleek" color="primary" />}
-                  label="Sleek(13)"
-                />
-                <FormControlLabel
-                  control={<Switch checked={isCategoryValues.Licensed} onChange={handleCategoryChange} name="Licensed" color="primary" />}
-                  label="Licensed(14)"
-                />
-                <FormControlLabel
-                  control={<Switch checked={isCategoryValues.Awesome} onChange={handleCategoryChange} name="Awesome" color="primary" />}
-                  label="Awesome(15)"
-                />
-                <FormControlLabel
-                  control={<Switch checked={isCategoryValues.Handcrafted} onChange={handleCategoryChange} name="Handcrafted" color="primary" />}
-                  label="Handcrafted(16)"
-                />
-              </Box>
+              <FormControl component="fieldset">
+                <FormGroup aria-label="position" row>
+                  {categoryIsLoading ? (
+                    <Box pt={10} pb={10} display="flex" justifyContent="center">
+                      <CircularProgress />
+                    </Box>
+                  ) : categoryError ? (
+                    <Typography variant="h4" color="secondary">{categoryError.message}</Typography>
+                  ) : (
+                    categoryData?.map(category => (
+                      <FormControlLabel key={category.id}
+                        control={<Switch checked={isCategoryValues.[category.name]} onChange={handleCategoryChange} name={category.name} color="primary" />}
+                        label={category.name}
+                      />
+                    ))
+                  )}
+                </FormGroup>
+              </FormControl>
             </FormGroup>
           </FormControl>
         </FormGroup>
       </FormControl>
-      {isLoading ? (
+      {productsIsLoading ? (
         <Box pt={10} pb={10} display="flex" justifyContent="center">
           <CircularProgress />
         </Box>
-      ) : error ? (
-        <Typography variant="h4" color="secondary">{error.message}</Typography>
+      ) : productsError ? (
+        <Typography variant="h4" color="secondary">{productsError.message}</Typography>
       ) : (
         <Box>
           <Typography variant="h4">Latest products:</Typography>
           <Box py={2}>
             <Grid container spacing={3}>
-              {data?.map(product =>(catalogFilter(product) &&
+              { productsData !== null && productsData?.map(product =>(catalogFilter(product) &&
                 <Grid item key={product.id} xs={12} sm={6} md={4}>
                   <ProductsListEl
                     {...product}
