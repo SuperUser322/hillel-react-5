@@ -30,8 +30,8 @@ const priceMarks = [
     label: '0$',
   },
   {
-    value: 200,
-    label: '200$',
+    value: 250,
+    label: '250$',
   },
   {
     value: 500,

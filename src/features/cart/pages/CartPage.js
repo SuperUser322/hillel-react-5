@@ -1,7 +1,8 @@
 import React,{ useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import { useSelector, useDispatch } from "react-redux";
+import { makeStyles } from '@material-ui/core/styles';
 import * as SettingsDuck from '../ducks/settings.duck';
+import Typography from '@material-ui/core/Typography';
 import Box from "@material-ui/core/Box";
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
@@ -9,9 +10,8 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import { NavLink } from "react-router-dom";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { NavLink } from "react-router-dom";
 
 import * as productsDuck from '../../products/ducks/products.duck';
 
@@ -77,7 +77,7 @@ export const CartPage = () => {
   const forTotalPrice = () => {
     let total = 0;
     items.map(item =>
-      total = total + (item.price*item.quantity)
+      total = total + (productsData[item.id-1].price*item.quantity)
     );
     return total;
   }
@@ -96,7 +96,7 @@ export const CartPage = () => {
           <Typography variant="h4" color="secondary">{productsError.message}</Typography>
         ) : (
           <Box>
-            <Typography variant="h4">Latest products:</Typography>
+            <Typography variant="h5">Your order:</Typography>
             <Box py={2}>
               <Grid container spacing={3}>
                 { productsData !== null && items.map(item => (

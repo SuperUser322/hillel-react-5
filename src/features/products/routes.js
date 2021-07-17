@@ -1,7 +1,7 @@
 import { ProductPage } from './pages/ProductPage';
 import { ProductsPage } from './pages/ProductsPage';
-import { CreateProductPage } from './pages/CreateProductPage';
-import { EditProductPage } from './pages/EditProductPage';
+//import { CreateProductPage } from './pages/CreateProductPage';
+//import { EditProductPage } from './pages/EditProductPage';
 import { featureConf } from "./config";
 
 export const routes = [
@@ -17,7 +17,7 @@ export const routes = [
     component: ProductPage,
     exact: true,
   },
-  {
+  /*{
     key: `${featureConf}/new-product`,
     path: '/new-product',
     component: CreateProductPage,
@@ -28,6 +28,6 @@ export const routes = [
     path: '/edit-product/:id',
     component: EditProductPage,
     exact: true,
-  },
+  },*/
 
 ];

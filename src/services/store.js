@@ -4,21 +4,7 @@ import { all } from 'redux-saga/effects';
 import thunk from 'redux-thunk';
 import { routerMiddleware as createRouterMiddleware, connectRouter } from 'connected-react-router';
 import history from './history';
-/*import * as SettingsDuck from './settings.duck';
-import * as Posts1Duck from './postsBySaga.duck';
-import * as Posts2Duck from './postsByThunk.duck';
-import * as Posts1LiveDuck from './postsByThunkLive.duck';
-import * as Posts2LiveDuck from './postsBySagaLive.duck';*/
 import { ducks } from "../ducks";
-
-// grab all ducks together
-/*const ducks = [
-  SettingsDuck,
-  Posts1Duck,
-  Posts2Duck,
-  Posts1LiveDuck,
-  Posts2LiveDuck,
-];*/
 
 // grab all reducers together
 const reducers = {};
@@ -33,7 +19,7 @@ ducks.forEach(d => {
 // create store function
 export function createStore() {
   let sagaMiddleware = createSagaMiddleware();
-  const routerMiddleware = createRouterMiddleware(history);
+  const routerMiddleware = createRouterMiddleware(history)
   let middleware = [thunk, routerMiddleware, sagaMiddleware, routerMiddleware];
 
   const middlewareEnhancer = applyMiddleware(...middleware);
